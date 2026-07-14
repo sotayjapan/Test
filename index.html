@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Phiếu Xuất Kho - Phan Khải Media</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #e74c3c; }
+        body { font-family: 'Times New Roman', serif; background: #f4f7f6; margin: 0; padding: 20px; }
+        .container { background: #fff; max-width: 900px; margin: auto; padding: 40px; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; }
+        
+        .header-info { text-align: center; margin-bottom: 30px; }
+        .company-name { font-size: 24px; font-weight: bold; color: var(--primary); text-transform: uppercase; margin-bottom: 5px; cursor: pointer; border: 1px dashed transparent; }
+        .company-name:hover { border: 1px dashed #ccc; }
+        
+        .title { text-align: center; font-size: 28px; font-weight: bold; margin: 20px 0; }
+        
+        .form-row { margin: 10px 0; font-size: 16px; }
+        .input-text { border: none; border-bottom: 1px dotted #000; width: 60%; padding: 5px; outline: none; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #eee; border: 1px solid #000; padding: 10px; }
+        td { border: 1px solid #000; padding: 8px; text-align: center; }
+        .input-cell { width: 90%; border: none; text-align: center; }
+        
+        .stamp-box { position: absolute; bottom: 150px; right: 50px; width: 180px; height: 100px; border: 3px dashed var(--accent); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: bold; transform: rotate(-15deg); cursor: pointer; }
+        
+        .btn-group { margin-top: 30px; text-align: center; }
+        .btn { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; color: white; font-weight: bold; margin: 5px; }
+        .btn-add { background: #27ae60; }
+        .btn-print { background: var(--primary); }
+        
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-info">
+        <div class="company-name" contenteditable="true">CÔNG TY TNHH PHAN KHẢI MEDIA</div>
+        <div>Địa chỉ: <input type="text" class="input-text" value="Hà Nội, Việt Nam"></div>
+    </div>
+
+    <div class="title">PHIẾU XUẤT KHO</div>
+
+    <div class="form-row"><strong>Khách hàng:</strong> <input type="text" class="input-text" style="width: 70%;"></div>
+    <div class="form-row"><strong>Số CCCD:</strong> <input type="text" class="input-text" style="width: 70%;"></div>
+    <div class="form-row"><strong>Lý do xuất:</strong> <input type="text" class="input-text" style="width: 70%;"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th><th>Tên hàng hóa</th><th>ĐVT</th><th>Số lượng</th><th>Đơn giá</th><th>Thành tiền</th><th class="no-print">Xóa</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <tr>
+                <td>1</td>
+                <td><input type="text" class="input-cell"></td>
+                <td><input type="text" class="input-cell" style="width: 50px;"></td>
+                <td><input type="number" class="input-cell qty" oninput="calculate()"></td>
+                <td><input type="number" class="input-cell price" oninput="calculate()"></td>
+                <td class="total">0</td>
+                <td class="no-print"><button onclick="removeRow(this)">x</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="stamp-box" contenteditable="true">CHƯA THANH TOÁN TIỀN CỌC</div>
+
+    <div class="btn-group no-print">
+        <button class="btn btn-add" onclick="addRow()">+ Thêm hàng</button>
+        <button class="btn btn-print" onclick="window.print()">In Phiếu Xuất Kho</button>
+    </div>
+</div>
+
+<script>
+    function addRow() {
+        let tbody = document.getElementById("tableBody");
+        let rowCount = tbody.rows.length + 1;
+        let row = tbody.insertRow(-1);
+        row.innerHTML = `<td>${rowCount}</td>
+            <td><input type="text" class="input-cell"></td>
+            <td><input type="text" class="input-cell" style="width: 50px;"></td>
+            <td><input type="number" class="input-cell qty" oninput="calculate()"></td>
+            <td><input type="number" class="input-cell price" oninput="calculate()"></td>
+            <td class="total">0</td>
+            <td class="no-print"><button onclick="removeRow(this)">x</button></td>`;
+    }
+
+    function removeRow(btn) {
+        btn.parentNode.parentNode.remove();
+        calculate();
+    }
+
+    function calculate() {
+        let rows = document.querySelectorAll("#tableBody tr");
+        rows.forEach(row => {
+            let qty = row.querySelector(".qty").value || 0;
+            let price = row.querySelector(".price").value || 0;
+            row.querySelector(".total").innerText = (qty * price).toLocaleString();
+        });
+    }
+</script>
+
+</body>
+</html>
